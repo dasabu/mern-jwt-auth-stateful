@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
-// import ms from 'ms'
+import ms from 'ms'
 import { env } from '~/config/env'
+import { JwtProvider } from '~/providers/jwt.provider'
 
 const login = async (req, res) => {
   try {
@@ -14,7 +15,43 @@ const login = async (req, res) => {
       return
     }
 
-    res.status(StatusCodes.OK).json({ message: 'Login successfully' })
+    // Create payload
+    const user = {
+      id: req.body.email,
+      email: req.body.password,
+    }
+
+    // Create access token
+    const accessToken = await JwtProvider.generateToken(
+      user,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      '1h'
+    )
+
+    // Create refresh token
+    const refreshToken = await JwtProvider.generateToken(
+      user,
+      env.REFRESH_TOKEN_SECRET_SIGNATURE,
+      '14 days' // must be longer than access token expired time
+    )
+
+    // Set cookie
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: ms('14 days'), // same with refresh token expired time, but must be different with access token expired time
+    })
+
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: ms('14 days'), // same with refresh token expired time, but must be different with access token expired time
+    })
+
+    // Return user info and tokens for FE (will store them in local storage)
+    res.status(StatusCodes.OK).json({ ...user, accessToken, refreshToken })
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }
