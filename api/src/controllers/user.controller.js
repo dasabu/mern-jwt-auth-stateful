@@ -71,10 +71,12 @@ const logout = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   try {
+    // In case using Local Storage: Get refresh token from body request
+    // const refreshToken = req.body?.refreshToken
     // Get refresh token from cookie
     const refreshToken = req.cookies?.refreshToken
     // Verify refresh token
-    const refreshTokenDecoded = JwtProvider.verifyToken(
+    const refreshTokenDecoded = await JwtProvider.verifyToken(
       refreshToken,
       env.REFRESH_TOKEN_SECRET_SIGNATURE
     )
@@ -84,7 +86,7 @@ const refreshToken = async (req, res) => {
       email: refreshTokenDecoded.email,
     }
     // Generate new access token
-    const accessToken = JwtProvider.generateToken(
+    const accessToken = await JwtProvider.generateToken(
       user,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
       '5s'
@@ -97,7 +99,7 @@ const refreshToken = async (req, res) => {
       maxAge: ms('14 days'),
     })
 
-    res.status(StatusCodes.OK).json({ accessToken })
+    res.status(StatusCodes.OK).json({ ...user, accessToken })
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }

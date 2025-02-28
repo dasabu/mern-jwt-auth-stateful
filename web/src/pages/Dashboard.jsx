@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography'
 import CircularProgress from '@mui/material/CircularProgress'
 import Divider from '@mui/material/Divider'
 import Button from '@mui/material/Button'
-import authorizedAxiosInstance from '~/utils/authorizedAxios'
 import { useNavigate } from 'react-router-dom'
+import { access, logout } from '~/utils/apis'
 
 function Dashboard() {
   const [user, setUser] = useState(null)
@@ -14,16 +14,14 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await authorizedAxiosInstance.get('/v1/dashboard/access')
+      const res = await access()
       setUser(res.data)
     }
     fetchData()
   }, [])
 
   const handleLogout = async () => {
-    await authorizedAxiosInstance.delete('/v1/users/logout')
-    setUser(null)
-
+    await logout()
     navigate('/login')
   }
 

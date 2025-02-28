@@ -9,8 +9,8 @@ import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import { toast } from 'react-toastify'
 import ReactIcon from '~/assets/logo.svg'
-import authorizedAxiosInstance from '~/utils/authorizedAxios'
 import { useNavigate } from 'react-router-dom'
+import { login } from '~/utils/apis'
 
 function Login() {
   const {
@@ -21,7 +21,7 @@ function Login() {
   const navigate = useNavigate()
 
   const submitLogIn = async (data) => {
-    const res = await authorizedAxiosInstance.post('/v1/users/login', data)
+    const res = await login(data)
     toast.success(res.data?.message || 'Login successfully')
     navigate('/dashboard')
   }
