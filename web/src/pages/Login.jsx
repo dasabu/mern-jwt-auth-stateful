@@ -27,10 +27,10 @@ function Login() {
       data
     )
     // res: id, email, accessToken, refreshToken
-    const user = {
-      id: res.data.id,
-      email: res.data.email,
-    }
+    // const user = {
+    //   id: res.data.id,
+    //   email: res.data.email,
+    // }
 
     /**
      * Local Storage
@@ -39,7 +39,7 @@ function Login() {
      * localStorage.setItem('user', JSON.stringify(user))
      */
 
-    toast.success(res.data?.message)
+    toast.success(res.data?.message || 'Login successfully')
     navigate('/dashboard')
   }
 

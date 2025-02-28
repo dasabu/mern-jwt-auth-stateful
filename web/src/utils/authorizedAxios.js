@@ -27,7 +27,7 @@ authorizedAxiosInstance.interceptors.request.use(
   }
 )
 
-authorizedAxiosInstance.interceptors.request.use(
+authorizedAxiosInstance.interceptors.response.use(
   (response) => {
     // any status code falls outside the range of 2xx cause this function to trigger
     return response

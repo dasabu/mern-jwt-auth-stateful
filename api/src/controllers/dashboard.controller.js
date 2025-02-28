@@ -1,10 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
-import { env } from '~/config/env'
 
 const access = async (req, res) => {
   try {
-    const user = { email: env.MOCK_DATABASE.USER.EMAIL }
-
+    const user = {
+      id: req.jwtDecoded.id,
+      email: req.jwtDecoded.email,
+    }
     res.status(StatusCodes.OK).json(user)
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)

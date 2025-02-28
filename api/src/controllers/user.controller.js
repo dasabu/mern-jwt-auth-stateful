@@ -25,7 +25,7 @@ const login = async (req, res) => {
     const accessToken = await JwtProvider.generateToken(
       user,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      '1h'
+      '5s'
     )
 
     // Create refresh token
