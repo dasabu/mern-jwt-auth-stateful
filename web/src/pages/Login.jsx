@@ -7,10 +7,10 @@ import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
-import axios from 'axios'
 import { toast } from 'react-toastify'
 import { API_ROOT } from '~/utils/constants'
 import ReactIcon from '~/assets/logo.svg'
+import authorizedAxiosInstance from '~/utils/authorizedAxios'
 
 function Login() {
   const {
@@ -20,12 +20,11 @@ function Login() {
   } = useForm()
 
   const submitLogIn = async (data) => {
-    try {
-      const res = await axios.post(`${API_ROOT}/v1/users/login`, data)
-      toast.success(res.data?.message)
-    } catch (error) {
-      toast.error(error.response?.data?.message || error?.message)
-    }
+    const res = await authorizedAxiosInstance.post(
+      `${API_ROOT}/v1/users/login`,
+      data
+    )
+    toast.success(res.data?.message)
   }
 
   return (
