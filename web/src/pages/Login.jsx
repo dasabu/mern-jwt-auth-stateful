@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import { API_ROOT } from '~/utils/constants'
 import ReactIcon from '~/assets/logo.svg'
 import authorizedAxiosInstance from '~/utils/authorizedAxios'
+import { useNavigate } from 'react-router-dom'
 
 function Login() {
   const {
@@ -18,13 +19,28 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm()
+  const navigate = useNavigate()
 
   const submitLogIn = async (data) => {
     const res = await authorizedAxiosInstance.post(
       `${API_ROOT}/v1/users/login`,
       data
     )
+    // res: id, email, accessToken, refreshToken
+    const user = {
+      id: res.data.id,
+      email: res.data.email,
+    }
+
+    /**
+     * Local Storage
+     * localStorage.setItem('accessToken', res.data.accessToken)
+     * localStorage.setItem('refreshToken', res.data.refreshToken)
+     * localStorage.setItem('user', JSON.stringify(user))
+     */
+
     toast.success(res.data?.message)
+    navigate('/dashboard')
   }
 
   return (

@@ -36,14 +36,14 @@ const login = async (req, res) => {
     )
 
     // Set cookie
-    res.cookie('access_token', accessToken, {
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
       maxAge: ms('14 days'), // same with refresh token expired time, but must be different with access token expired time
     })
 
-    res.cookie('refresh_token', refreshToken, {
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',

@@ -5,7 +5,7 @@ let authorizedAxiosInstance = axios.create()
 
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10 // 10 mins
 /**
- * automatically attach cookie in each request to BE
+ * ! Cookie: automatically attach cookie in each request to BE
  * in case we use jwt (access and refresh) tokens by httpOnly cookie
  */
 authorizedAxiosInstance.defaults.withCredentials = true
@@ -13,6 +13,13 @@ authorizedAxiosInstance.defaults.withCredentials = true
 authorizedAxiosInstance.interceptors.request.use(
   (config) => {
     // any status code lie within the range of 2xx cause this function to trigger
+    /**
+     * Local Storage
+     * const accessToken = localStorage.getItem('accessToken')
+     * if (accessToken) {
+     *   config.headers.Authorization = `Bearer ${accessToken}`
+     * }
+     */
     return config
   },
   (error) => {

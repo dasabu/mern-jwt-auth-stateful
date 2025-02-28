@@ -41,10 +41,12 @@ function Dashboard() {
   return (
     <Box
       sx={{
+        height: '100vh',
+        margin: 'auto',
         maxWidth: '1120px',
         marginTop: '1em',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         flexDirection: 'column',
         padding: '0 1em',
       }}
