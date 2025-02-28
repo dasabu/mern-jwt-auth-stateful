@@ -12,6 +12,6 @@ Router.get('/status', (req, res) => {
 
 Router.use('/users', userRoute)
 
-Router.use('/dashboards', dashboardRoute)
+Router.use('/dashboard', dashboardRoute)
 
 export const routerV1 = Router

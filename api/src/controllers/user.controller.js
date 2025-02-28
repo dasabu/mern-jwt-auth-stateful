@@ -17,8 +17,8 @@ const login = async (req, res) => {
 
     // Create payload
     const user = {
-      id: req.body.email,
-      email: req.body.password,
+      id: env.MOCK_DATABASE.USER.ID,
+      email: req.body.email,
     }
 
     // Create access token
@@ -59,7 +59,10 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Do something
+    // Delete cookie
+    res.clearCookie('accessToken')
+    res.clearCookie('refreshToken')
+
     res.status(StatusCodes.OK).json({ message: 'Logout successfully' })
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
@@ -68,10 +71,33 @@ const logout = async (req, res) => {
 
 const refreshToken = async (req, res) => {
   try {
-    // Do something
-    res
-      .status(StatusCodes.OK)
-      .json({ message: 'Get refresh token successfully' })
+    // Get refresh token from cookie
+    const refreshToken = req.cookies?.refreshToken
+    // Verify refresh token
+    const refreshTokenDecoded = JwtProvider.verifyToken(
+      refreshToken,
+      env.REFRESH_TOKEN_SECRET_SIGNATURE
+    )
+    // Get user info from decoded refresh token
+    const user = {
+      id: refreshTokenDecoded.id,
+      email: refreshTokenDecoded.email,
+    }
+    // Generate new access token
+    const accessToken = JwtProvider.generateToken(
+      user,
+      env.ACCESS_TOKEN_SECRET_SIGNATURE,
+      '5s'
+    )
+    // Set cookie in response
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+      maxAge: ms('14 days'),
+    })
+
+    res.status(StatusCodes.OK).json({ accessToken })
   } catch (error) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error)
   }

@@ -27,11 +27,11 @@ const isAuthorized = async (req, res, next) => {
     // allow request to continue
     next()
   } catch (error) {
-    /**
-     * Case 1: access token is expired: Return status code 410 GONE
-     * so that FE knows to call the API to refresh the access token
-     */
     if (error.message?.includes('jwt expired')) {
+      /**
+       * Case 1: access token is expired: Return status code 410 GONE
+       * so that FE knows to call the API to refresh the access token
+       */
       res
         .status(StatusCodes.GONE)
         .json({ message: 'Need to refresh the access token' })

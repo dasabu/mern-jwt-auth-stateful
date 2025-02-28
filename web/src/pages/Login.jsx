@@ -8,7 +8,6 @@ import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import Typography from '@mui/material/Typography'
 import { toast } from 'react-toastify'
-import { API_ROOT } from '~/utils/constants'
 import ReactIcon from '~/assets/logo.svg'
 import authorizedAxiosInstance from '~/utils/authorizedAxios'
 import { useNavigate } from 'react-router-dom'
@@ -22,23 +21,7 @@ function Login() {
   const navigate = useNavigate()
 
   const submitLogIn = async (data) => {
-    const res = await authorizedAxiosInstance.post(
-      `${API_ROOT}/v1/users/login`,
-      data
-    )
-    // res: id, email, accessToken, refreshToken
-    // const user = {
-    //   id: res.data.id,
-    //   email: res.data.email,
-    // }
-
-    /**
-     * Local Storage
-     * localStorage.setItem('accessToken', res.data.accessToken)
-     * localStorage.setItem('refreshToken', res.data.refreshToken)
-     * localStorage.setItem('user', JSON.stringify(user))
-     */
-
+    const res = await authorizedAxiosInstance.post('/v1/users/login', data)
     toast.success(res.data?.message || 'Login successfully')
     navigate('/dashboard')
   }

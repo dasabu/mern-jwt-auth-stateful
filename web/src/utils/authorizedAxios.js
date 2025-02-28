@@ -1,7 +1,10 @@
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { API_ROOT } from './constants'
 
-let authorizedAxiosInstance = axios.create()
+let authorizedAxiosInstance = axios.create({
+  baseURL: API_ROOT,
+})
 
 authorizedAxiosInstance.defaults.timeout = 1000 * 60 * 10 // 10 mins
 /**
@@ -13,13 +16,6 @@ authorizedAxiosInstance.defaults.withCredentials = true
 authorizedAxiosInstance.interceptors.request.use(
   (config) => {
     // any status code lie within the range of 2xx cause this function to trigger
-    /**
-     * Local Storage
-     * const accessToken = localStorage.getItem('accessToken')
-     * if (accessToken) {
-     *   config.headers.Authorization = `Bearer ${accessToken}`
-     * }
-     */
     return config
   },
   (error) => {
@@ -30,6 +26,16 @@ authorizedAxiosInstance.interceptors.request.use(
 authorizedAxiosInstance.interceptors.response.use(
   (response) => {
     // any status code falls outside the range of 2xx cause this function to trigger
+    const { url } = response.config
+    if (url === '/v1/users/login') {
+      const user = {
+        id: response.data.id,
+        email: response.data.email,
+      }
+      localStorage.setItem('user', JSON.stringify(user))
+    } else if (url === '/v1/users/logout') {
+      localStorage.removeItem('user')
+    }
     return response
   },
   (error) => {
